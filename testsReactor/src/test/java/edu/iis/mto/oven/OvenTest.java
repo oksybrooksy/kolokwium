@@ -78,4 +78,14 @@ class OvenTest {
         assertThrows(OvenException.class, () ->  oven.start(bakingProgram));
     }
 
+    @Test
+    void ZeroInvocationsOfHeatingModule(){
+        BakingProgram bakingProgram = BakingProgram.builder().build();
+        oven.start(bakingProgram);
+
+        verify(heatingModule, times(0)).heater(HeatingSettings.builder()
+                .withTimeInMinutes(10).withTargetTemp(bakingProgram.getInitialTemp())
+                .build());
+    }
+
 }
