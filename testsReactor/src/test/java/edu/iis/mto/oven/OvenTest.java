@@ -55,4 +55,27 @@ class OvenTest {
         assertThrows(OvenException.class, () ->  oven.start(bakingProgram));
     }
 
+    @Test
+    void runHeatingProgramThrowOvenException() throws HeatingException {
+        HeatType heat = HeatType.GRILL;
+        int stageTime = 50;
+        int targetTemp = 180;
+        int initTemp = 0;
+
+        ProgramStage programStages = ProgramStage.builder().withTargetTemp(targetTemp)
+                .withStageTime(stageTime)
+                .withHeat(heat)
+                .build();
+        List<ProgramStage> programStagesList = List.of(programStages);
+
+        BakingProgram bakingProgram = BakingProgram.builder().withInitialTemp(initTemp)
+                .withStages(programStagesList).build();
+
+        HeatingSettings heatingSettings = HeatingSettings.builder().withTargetTemp(targetTemp)
+                .withTimeInMinutes(stageTime).build();
+
+        doThrow(HeatingException.class).when(heatingModule).grill(heatingSettings);
+        assertThrows(OvenException.class, () ->  oven.start(bakingProgram));
+    }
+
 }
